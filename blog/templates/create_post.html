@@ -41,23 +41,17 @@
                         {% endfor %}
                     </div>
                 {% else %}
-                    {{ form.content(class="form-control form-control-lg") }}
+                    <textarea id="summernote" name="content" class="form-control form-control-lg">{{form.content.data}}</textarea>
                 {% endif %}
             </div>
-            <div id="body_img_div">
-                <div id = "img0div">
-                    <label for="img0"></label>
-                    <input type="file" id="img0" name="body_imgs" accept=".jpg,.png,.gif">
-                </div>
-            </div>
-
         </fieldset>
         <div class="form-group">
             {{ form.submit(class="btn btn-outline-info") }}
         </div>
     </form>
-    {{ ckeditor.load() }}
-    {{ ckeditor.config(name='content') }}
-    {{ ckeditor.config(name='description')}}
 </div>
+
+<script>
+    $(document).ready(function() {$('#summernote').summernote();});
+  </script>
 {% endblock content %}

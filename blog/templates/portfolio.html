@@ -1,0 +1,108 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="py-5 bg-light border-bottom mb-4">
+    <div class="container">
+        <div class="text-center my-5">
+            <h1 class="fw-bolder">Portfolio</h1>
+            <p class="lead mb-0">All kinds of videos of implementation and Sound Designs.</p>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <!-- Blog entries-->
+        <div class="col-xl-12">
+            <div class="row">
+                <!-- Latest blog post-->
+                <div class="col-xl-8">
+                    <div class="card mb-4">
+                        <div class="youtube-video-wrapper">
+                            <iframe width="560" height="315" src="{{videos[0].video_link}}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+                        <div class="card-body">
+                            <div class="small text-muted">{{ videos[0].date_posted.strftime('%Y-%m-%d')}}</div>
+                            <h2 class="card-title">{{ videos[0].title }}</h2>
+                            <p class="card-text">{{ videos[0].description }}</p>
+                            <a class="btn btn-primary" href="">Read more →</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Side widgets-->
+                <div class="col-xl-4">
+                    <!-- Search widget-->
+                    <div class="card mb-2">
+                        <div class="card-header">Search</div>
+                        <div class="card-body">
+                            <div class="input-group">
+                                <input class="form-control" type="text" placeholder="Enter search term..." aria-label="Enter search term..." aria-describedby="button-search" />
+                                <button class="btn btn-primary" id="button-search" type="button">Go!</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            
+            
+            {% for i in range(rows) %}
+            <div class="row">
+                <!-- Nested row for non-featured blog posts-->
+                {% if (i * 3 + 1) < videos|length %}
+                <div class="col-xl-4">
+                    <!-- Blog post-->
+                    <div class="card mb-4">
+                        <div class="youtube-video-wrapper">
+                            <iframe width="560" height="315" src="{{videos[i * 3 + 1].video_link}}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+                        <div class="card-body">
+                            <div class="small text-muted">{{ videos[i * 3 + 1].date_posted.strftime('%Y-%m-%d')}}</div>
+                            <h2 class="card-title">{{ videos[i * 3 + 1].title }}</h2>
+                            <p class="card-text">{{ videos[i * 3 + 1].description }}</p>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                {% if (i * 3 + 2) < videos|length %}
+                <div class="col-xl-4">
+                    <!-- Blog post-->
+                    <div class="card mb-4">
+                        <div class="youtube-video-wrapper">
+                            <iframe width="560" height="315" src="{{videos[i * 3 + 2].video_link}}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+                        <div class="card-body">
+                            <div class="small text-muted">{{ videos[i * 3 + 2].date_posted.strftime('%Y-%m-%d')}}</div>
+                            <h2 class="card-title">{{ videos[i * 3 + 2].title }}</h2>
+                            <p class="card-text">{{ videos[i * 3 + 2].description }}</p>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                {% if (i * 3 + 3) < videos|length %}
+                <div class="col-xl-4">
+                    <!-- Blog post-->
+                    <div class="card mb-4">
+                        <div class="youtube-video-wrapper">
+                            <iframe width="560" height="315" src="{{videos[i * 3 + 3].video_link}}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+                        <div class="card-body">
+                            <div class="small text-muted">{{ videos[i * 3 + 3].date_posted.strftime('%Y-%m-%d')}}</div>
+                            <h2 class="card-title">{{ videos[i * 3 + 3].title }}</h2>
+                            <p class="card-text">{{ videos[i * 3 + 3].description }}</p>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}          
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block create_admin %}
+<li class="nav-item">
+  {% if current_user.is_authenticated %}
+  <a class="nav-link" href="">Add Video</a>
+  {% endif %}
+</li>
+{% endblock create_admin %}

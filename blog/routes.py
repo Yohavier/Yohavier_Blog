@@ -1,37 +1,36 @@
 from flask import render_template, url_for, redirect, flash, request, abort
 from sqlalchemy import desc
 from blog import app, db, bcrypt
-from blog.models import Announcement, Post, Admin
+from blog.models import Post, Admin, Video
 from blog.forms import LoginForm, PostForm
 from flask_login import login_user, current_user, login_required
 
 @app.route("/")
 @app.route("/home")
 def home():
-    anns = Announcement.query.all()
-    posts = Post.query.order_by(desc(Post.date_posted)).limit(2).all()
+    posts = Post.query.order_by(desc(Post.date_posted)).all()
     latest_post = Post.query.order_by(desc(Post.date_posted)).first() 
-    return render_template('home.html', posts=posts, latest_post=latest_post, title='Home', anns=anns)
+    return render_template('home.html', posts=posts, latest_post=latest_post, title='Home')
 
-@app.route("/about")    
-def about():
-    anns = Announcement.query.all()
-    latest_post = Post.query.order_by(desc(Post.date_posted)).first()
-    return render_template('about.html', title='About', latest_post = latest_post, anns=anns)
+@app.route("/resume")    
+def resume():
+    return render_template('resume.html', title='Resume')
 
-@app.route("/post/<int:post_id>")
-def post(post_id):
-    anns = Announcement.query.all()
+@app.route("/blog/<int:post_id>")
+def blog_post(post_id):
     post = Post.query.get_or_404(post_id)
     latest_post = Post.query.order_by(desc(Post.date_posted)).first()
-    return render_template('post.html', title=post.title, post=post, latest_post=latest_post, anns=anns)
+    return render_template('blog_post.html', title=post.title, post=post, latest_post=latest_post)
 
-@app.route("/all_posts")
-def all_posts():
-    anns = Announcement.query.all()
+@app.route("/blog")
+def blog():
     posts = Post.query.order_by(desc(Post.date_posted)).all()
-    latest_post = Post.query.order_by(desc(Post.date_posted)).first()
-    return render_template('all_posts.html', title="All Posts", posts=posts, latest_post=latest_post, anns=anns )
+    return render_template('blog.html', title="Blog", posts=posts, rows=get_rows(len(posts)))
+
+@app.route("/portfolio")
+def portfolio():
+    videos = Video.query.order_by(desc(Video.date_posted)).all()
+    return render_template('portfolio.html', title="Portfolio", videos=videos, rows=get_rows(len(videos)))
 
 @app.route("/admin", methods=['GET', 'POST'])
 def admin():
@@ -49,7 +48,7 @@ def admin():
     return render_template('admin_login.html', title='Admin Login', form=form, latest_post=latest_post)
 
 
-@app.route("/post/new", methods=['GET', 'POST'])
+@app.route("/blog/new", methods=['GET', 'POST'])
 @login_required
 def new_post():
     form = PostForm()
@@ -62,7 +61,7 @@ def new_post():
     latest_post = Post.query.order_by(desc(Post.date_posted)).first()
     return render_template('create_post.html', title='New Post', form=form, legend='New Post', latest_post=latest_post)
 
-@app.route("/post/<int:post_id>/update", methods=['GET', 'POST'])
+@app.route("/blog/<int:post_id>/update", methods=['GET', 'POST'])
 @login_required
 def update_post(post_id):
     post = Post.query.get_or_404(post_id)
@@ -82,7 +81,7 @@ def update_post(post_id):
     return render_template('create_post.html', latest_post=latest_post, title='Update Post', form=form, legend='Update Post')
 
 
-@app.route("/post/<int:post_id>/delete", methods=['GET', 'POST'])
+@app.route("/blog/<int:post_id>/delete", methods=['GET', 'POST'])
 @login_required
 def delete_post(post_id):
     post = Post.query.get_or_404(post_id)
@@ -90,3 +89,11 @@ def delete_post(post_id):
     db.session.commit()
     flash('Your post has been deleted!', 'success')
     return redirect(url_for('home'))
+
+
+
+
+def get_rows(amt):
+    row_amt = int(amt / 3) + (amt % 3 > 0)
+    return row_amt
+    

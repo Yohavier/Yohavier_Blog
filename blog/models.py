@@ -16,13 +16,6 @@ class Post(db.Model):
     def __repr__(self):
         return f"Post('{self.title}','{self.date_posted}')"
 
-class Announcement(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(100), nullable=False)
-    
-    def __repr__(self):
-        return f"Announcement('{self.title}')"
-
 class Admin(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), unique=True, nullable=False)
@@ -30,3 +23,11 @@ class Admin(db.Model, UserMixin):
 
     def __repr__(self):
         return f"User('{self.username}')"
+
+class Video(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow())
+    title = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.String(), nullable=False)
+    video_link = db.Column(db.String(), nullable=False)
+    content = db.Column(db.String(), nullable=False)

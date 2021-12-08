@@ -2,7 +2,7 @@ from flask import render_template, url_for, redirect, flash, request, abort
 from sqlalchemy import desc
 from blog import app, db, bcrypt
 from blog.models import Post, Admin, Video
-from blog.forms import LoginForm, PostForm
+from blog.forms import LoginForm, PostForm, PostPortfolioForm
 from flask_login import login_user, current_user, login_required
 import secrets
 import os
@@ -34,6 +34,18 @@ def portfolio():
     videos = Video.query.order_by(desc(Video.date_posted)).all()
     return render_template('portfolio.html', title="Portfolio", videos=videos, rows=get_rows(len(videos)))
 
+@app.route("/portfolio/new", methods=['GET', 'POST'])
+@login_required
+def new_portfolio():
+    form = PostPortfolioForm()
+    if form.validate_on_submit():
+        portfolio_post = Video(title=form.title.data, content="none", description="none", video_link=form.youtube_link.data)
+        db.session.add(portfolio_post)
+        db.session.commit()
+        flash("New Portfolio")
+        return redirect(url_for('portfolio'))
+    return render_template('create_video.html', title='New Portfolio Post', form=form, legend='New Portfolio Post')
+
 @app.route("/admin", methods=['GET', 'POST'])
 def admin():
     if current_user.is_authenticated:
@@ -62,7 +74,7 @@ def new_post():
         db.session.add(post)
         db.session.commit()
         flash('New Post')
-        return redirect(url_for('home'))
+        return redirect(url_for('blog'))
     latest_post = Post.query.order_by(desc(Post.date_posted)).first()
     return render_template('create_post.html', title='New Post', form=form, legend='New Post', latest_post=latest_post)
 

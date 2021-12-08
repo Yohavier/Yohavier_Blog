@@ -28,6 +28,6 @@ class Video(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow())
     title = db.Column(db.String(100), nullable=False)
-    description = db.Column(db.String(), nullable=False)
+    description = db.Column(db.String())
     video_link = db.Column(db.String(), nullable=False)
-    content = db.Column(db.String(), nullable=False)
+    content = db.Column(db.String())

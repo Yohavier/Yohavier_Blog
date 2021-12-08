@@ -22,21 +22,7 @@
                         <div class="card-body">
                             <div class="small text-muted">{{ videos[0].date_posted.strftime('%Y-%m-%d')}}</div>
                             <h2 class="card-title">{{ videos[0].title }}</h2>
-                            <p class="card-text">{{ videos[0].description }}</p>
                             <a class="btn btn-primary" href="">Read more →</a>
-                        </div>
-                    </div>
-                </div>
-                <!-- Side widgets-->
-                <div class="col-xl-4">
-                    <!-- Search widget-->
-                    <div class="card mb-2">
-                        <div class="card-header">Search</div>
-                        <div class="card-body">
-                            <div class="input-group">
-                                <input class="form-control" type="text" placeholder="Enter search term..." aria-label="Enter search term..." aria-describedby="button-search" />
-                                <button class="btn btn-primary" id="button-search" type="button">Go!</button>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -102,7 +88,7 @@
 {% block create_admin %}
 <li class="nav-item">
   {% if current_user.is_authenticated %}
-  <a class="nav-link" href="">Add Video</a>
+  <a class="nav-link" href="{{ url_for('new_portfolio') }}">Add Video</a>
   {% endif %}
 </li>
 {% endblock create_admin %}

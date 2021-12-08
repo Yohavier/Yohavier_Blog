@@ -18,3 +18,7 @@ class PostForm(FlaskForm):
     submit = SubmitField('Save')
     picture  = FileField('Blog Picture', validators=[FileAllowed(['jpg', 'png'])])
 
+class PostPortfolioForm(FlaskForm):
+    title = StringField('Title', validators=[DataRequired()])
+    youtube_link = StringField('Link', validators=[DataRequired()])
+    submit = SubmitField('Save')

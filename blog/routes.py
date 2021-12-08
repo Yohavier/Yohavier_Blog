@@ -4,6 +4,8 @@ from blog import app, db, bcrypt
 from blog.models import Post, Admin, Video
 from blog.forms import LoginForm, PostForm
 from flask_login import login_user, current_user, login_required
+import secrets
+import os
 
 @app.route("/")
 @app.route("/home")
@@ -16,16 +18,16 @@ def home():
 def resume():
     return render_template('resume.html', title='Resume')
 
-@app.route("/blog/<int:post_id>")
+#Issue lies within here. If you trigger resume page the navbar also breaks
+@app.route("/<int:post_id>")
 def blog_post(post_id):
     post = Post.query.get_or_404(post_id)
-    latest_post = Post.query.order_by(desc(Post.date_posted)).first()
-    return render_template('blog_post.html', title=post.title, post=post, latest_post=latest_post)
+    return render_template('blog_post.html', title=post.title, post=post)
 
-@app.route("/blog")
+@app.route("/myblog")
 def blog():
     posts = Post.query.order_by(desc(Post.date_posted)).all()
-    return render_template('blog.html', title="Blog", posts=posts, rows=get_rows(len(posts)))
+    return render_template('blog.html',posts=posts, rows=get_rows(len(posts)))
 
 @app.route("/portfolio")
 def portfolio():
@@ -53,7 +55,10 @@ def admin():
 def new_post():
     form = PostForm()
     if form.validate_on_submit():
-        post = Post(title=form.title.data, description=form.description.data, content=form.content.data)
+        picture_file = ""
+        if form.picture.data:
+            picture_file = "../static/blog_images/" + save_picture(form.picture.data)
+        post = Post(title=form.title.data, description=form.description.data, content=form.content.data, image_file=picture_file)
         db.session.add(post)
         db.session.commit()
         flash('New Post')
@@ -67,16 +72,26 @@ def update_post(post_id):
     post = Post.query.get_or_404(post_id)
     form = PostForm()
     if form.validate_on_submit():
+        picture_file = ""
+        if form.picture.data:
+            delete_old_img(post.image_file)
+            picture_file = "../static/blog_images/" + save_picture(form.picture.data)
+            post.image_file = picture_file
+        else:
+            post.image_file = post.image_file
+
         post.title = form.title.data
         post.content = form.content.data
-        form.description.data = post.description
+        post.description = form.description.data
         db.session.commit()
         flash('Your post has been updated!', 'success')
-        return redirect(url_for('post', post_id=post.id))
+        return redirect(url_for('blog'))
     elif request.method == 'GET':
         form.title.data = post.title
         form.content.data = post.content
         form.description.data = post.description
+        form.picture.data = post.image_file
+        
     latest_post = Post.query.order_by(desc(Post.date_posted)).first()
     return render_template('create_post.html', latest_post=latest_post, title='Update Post', form=form, legend='Update Post')
 
@@ -88,8 +103,7 @@ def delete_post(post_id):
     db.session.delete(post)
     db.session.commit()
     flash('Your post has been deleted!', 'success')
-    return redirect(url_for('home'))
-
+    return redirect(url_for('blog'))
 
 
 
@@ -97,3 +111,15 @@ def get_rows(amt):
     row_amt = int(amt / 3) + (amt % 3 > 0)
     return row_amt
     
+
+def save_picture(form_picture):
+    random_hex = secrets.token_hex(8)
+    _, f_ext = os.path.splitext(form_picture.filename)
+    picture_fn = random_hex + f_ext
+    picture_path = os.path.join(app.root_path, "static\\blog_images\\", picture_fn)
+    form_picture.save(picture_path)
+    return picture_fn
+
+def delete_old_img(picture_fn):
+    picture_fn = os.path.basename(picture_fn)
+    os.remove(os.path.join(app.root_path, "static\\blog_images\\", picture_fn)) 

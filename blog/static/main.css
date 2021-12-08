@@ -170,3 +170,10 @@ div.col-sm-9 div {
     margin-left: 150px;
   }
 }
+
+.blog_title_container{
+  padding: 10%;
+}
+.blog_title_img{
+  border: 5px solid black;
+}

@@ -12,7 +12,7 @@ class Post(db.Model):
     date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow())
     content = db.Column(db.Text, nullable=False)
     description = db.Column(db.Text, nullable=False)
-
+    image_file = db.Column(db.String(20))
     def __repr__(self):
         return f"Post('{self.title}','{self.date_posted}')"
 

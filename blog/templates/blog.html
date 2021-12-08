@@ -2,12 +2,12 @@
 
 {% block content %}
 <div class="py-5 bg-light border-bottom mb-4">
-  <div class="container">
-      <div class="text-center my-5">
-          <h1 class="fw-bolder">Blog</h1>
-          <p class="lead mb-0">Here you can read about Sound Design, Audioprogramming, Wwise and whatever im up to.</p>
-      </div>
-  </div>
+    <div class="container">
+        <div class="text-center my-5">
+            <h1 class="fw-bolder">Blog</h1>
+            <p class="lead mb-0">Here you can read about Sound Design, Audioprogramming, Wwise and whatever im up to.</p>
+        </div>
+    </div>
 </div>
 <!-- Page content-->
 <div class="container">
@@ -18,7 +18,7 @@
                 <!-- Latest blog post-->
                 <div class="col-xl-8">
                     <div class="card mb-4">
-                        <a href="#!"><img class="card-img-top" src="https://dummyimage.com/850x350/dee2e6/6c757d.jpg" alt="..." /></a>
+                        <a href="{{ url_for('blog_post', post_id=posts[0].id) }}"><img class="card-img-top" src="{{ posts[0].image_file}}" alt="..." /></a>
                         <div class="card-body">
                             <div class="small text-muted">{{ posts[0].date_posted.strftime('%Y-%m-%d') }}</div>
                             <h2 class="card-title">{{ posts[0].title }}</h2>
@@ -26,19 +26,6 @@
                             <a class="btn btn-primary" href="{{ url_for('blog_post', post_id=posts[0].id) }}">Read more →</a>
                         </div>
                     </div>
-                </div>
-                <!-- Side widgets-->
-                <div class="col-xl-4">
-                    <!-- Search widget-->
-                    <div class="card mb-4">
-                        <div class="card-header">Search</div>
-                        <div class="card-body">
-                            <div class="input-group">
-                                <input class="form-control" type="text" placeholder="Enter search term..." aria-label="Enter search term..." aria-describedby="button-search" />
-                                <button class="btn btn-primary" id="button-search" type="button">Go!</button>
-                            </div>
-                        </div>
-                    </div> 
                 </div>
             </div>
             {% for i in range(rows) %}
@@ -88,8 +75,8 @@
                 {% endif %}
             </div>
             {% endfor %}
-      </div>
-  </div>
+        </div>
+    </div>
 </div>
 {% endblock content %}
 

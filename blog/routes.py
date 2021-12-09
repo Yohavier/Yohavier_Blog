@@ -18,8 +18,7 @@ def home():
 def resume():
     return render_template('resume.html', title='Resume')
 
-#Issue lies within here. If you trigger resume page the navbar also breaks
-@app.route("/<int:post_id>")
+@app.route("/blog/<int:post_id>")
 def blog_post(post_id):
     post = Post.query.get_or_404(post_id)
     return render_template('blog_post.html', title=post.title, post=post)
@@ -45,6 +44,36 @@ def new_portfolio():
         flash("New Portfolio")
         return redirect(url_for('portfolio'))
     return render_template('create_video.html', title='New Portfolio Post', form=form, legend='New Portfolio Post')
+
+@app.route("/portfolio/<int:id>")
+def video_post(id):
+    portfolio = Video.query.get_or_404(id)
+    return render_template('video_post.html', portfolio=portfolio)
+
+@app.route("/portfolio/<int:id>/delete", methods=['GET', 'POST'])
+@login_required
+def delete_video(id):
+    video = Video.query.get_or_404(id)
+    db.session.delete(video)
+    db.session.commit()
+    flash('Your video has been deleted!', 'success')
+    return redirect(url_for('portfolio'))
+
+@app.route("/portfolio<int:id>/update", methods = ['GET', 'POST'])
+@login_required
+def update_video(id):
+    video = Video.query.get_or_404(id)
+    form = PostPortfolioForm()
+    if form.validate_on_submit():
+        video.title = form.title.data
+        video.video_link = form.youtube_link.data
+        db.session.commit()
+        flash('Your post has been updated!', 'success')
+        return redirect(url_for('portfolio'))
+    elif request.method == 'GET':
+        form.title.data = video.title
+        form.youtube_link.data = video.video_link
+    return render_template('create_video.html', form=form, legend='Update Portfolio')
 
 @app.route("/admin", methods=['GET', 'POST'])
 def admin():
@@ -116,7 +145,6 @@ def delete_post(post_id):
     db.session.commit()
     flash('Your post has been deleted!', 'success')
     return redirect(url_for('blog'))
-
 
 
 def get_rows(amt):
